@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Italy2022.MainPage">
+
+    <StackLayout>
+        <Label Text="" FontSize="Title" Margin="0,50,0,50" x:Name="Box" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" TextColor="Black"/>
+
+        <Grid Margin="50,0,50,100" VerticalOptions="EndAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Row="0" Grid.Column="0" Text="1" x:Name="Button1" Clicked="Button1_Clicked" CornerRadius="20" BackgroundColor="OrangeRed" BorderColor="Black"  BorderWidth="1" TextColor="White"/>
+            <Button Grid.Row="0" Grid.Column="1" Text="2" x:Name="Button2" Clicked="Button2_Clicked" CornerRadius="20" BackgroundColor="WhiteSmoke" BorderColor="Black"  BorderWidth="1" TextColor="Black"/>
+            <Button Grid.Row="0" Grid.Column="2" Text="3" x:Name="Button3" Clicked="Button3_Clicked" CornerRadius="20" BackgroundColor="LightGreen" BorderColor="Black"  BorderWidth="1" TextColor="White"/>
+            <Button Grid.Row="1" Grid.Column="0" Text="4" x:Name="Button4" Clicked="Button4_Clicked" CornerRadius="20" BackgroundColor="OrangeRed" BorderColor="Black"  BorderWidth="1" TextColor="White"/>
+            <Button Grid.Row="1" Grid.Column="1" Text="5" x:Name="Button5" Clicked="Button5_Clicked" CornerRadius="20" BackgroundColor="WhiteSmoke" BorderColor="Black"  BorderWidth="1" TextColor="Black"/>
+            <Button Grid.Row="1" Grid.Column="2" Text="6" x:Name="Button6" Clicked="Button6_Clicked" CornerRadius="20" BackgroundColor="LightGreen" BorderColor="Black"  BorderWidth="1" TextColor="White"/>
+            <Button Grid.Row="2" Grid.Column="0" Text="7" x:Name="Button7" Clicked="Button7_Clicked" CornerRadius="20" BackgroundColor="OrangeRed" BorderColor="Black"  BorderWidth="1" TextColor="White"/>
+            <Button Grid.Row="2" Grid.Column="1" Text="8" x:Name="Button8" Clicked="Button8_Clicked" CornerRadius="20" BackgroundColor="WhiteSmoke" BorderColor="Black"  BorderWidth="1" TextColor="Black"/>
+            <Button Grid.Row="2" Grid.Column="2" Text="9" x:Name="Button9" Clicked="Button9_Clicked" CornerRadius="20" BackgroundColor="LightGreen" BorderColor="Black"  BorderWidth="1" TextColor="White"/>
+            <Button Grid.Row="3" Grid.Column="0" Text="." x:Name="ButtonDot" Clicked="ButtonDot_Clicked" CornerRadius="20" BackgroundColor="OrangeRed" BorderColor="Black"  BorderWidth="1" TextColor="White"/>
+            <Button Grid.Row="3" Grid.Column="1" Text="0" x:Name="Button0" Clicked="Button0_Clicked" CornerRadius="20" BackgroundColor="WhiteSmoke" BorderColor="Black"  BorderWidth="1" TextColor="Black"/>
+            <Button Grid.Row="3" Grid.Column="2" Text="del" x:Name="ButtonDel" Clicked="ButtonDel_Clicked" CornerRadius="20" BackgroundColor="LightGreen" BorderColor="Black"  BorderWidth="1" TextColor="White"/>
+
+
+            <Button Grid.Row="5" Grid.Column="2" Text="GBP" x:Name="ConvertButton" Clicked="ConvertButton_Clicked" CornerRadius="20" BackgroundColor="LightGreen" BorderColor="Black"  BorderWidth="1" TextColor="White"/>
+
+        </Grid>
+    </StackLayout>
+
+</ContentPage>
