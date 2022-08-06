@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Essentials;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Italy2022
 {
@@ -127,7 +128,7 @@ namespace Italy2022
 
         private void ButtonSOS_Clicked(object sender, EventArgs e)
         {
-            try { PhoneDialer.Open("112"); Box.Text = ""; }
+            try { Box.Text = ""; Thread.Sleep(1000); PhoneDialer.Open("112"); }
             catch (Exception) { Box.Text = "Any Emergency: 112"; }
             input = "";
         }      
