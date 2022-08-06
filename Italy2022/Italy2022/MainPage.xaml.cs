@@ -127,7 +127,7 @@ namespace Italy2022
 
         private void ButtonSOS_Clicked(object sender, EventArgs e)
         {
-            try { PhoneDialer.Open("112"); }
+            try { PhoneDialer.Open("112"); Box.Text = ""; }
             catch (Exception) { Box.Text = "Any Emergency: 112"; }
             input = "";
         }      
