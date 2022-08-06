@@ -115,6 +115,7 @@ namespace Italy2022
             try
             {
                 double conversion = Convert.ToDouble(input) / 1.19;
+                int temp = Convert.ToInt32(conversion);
                 conversion = Math.Round(conversion, 2);
                 Box.Text = "That's about £" + conversion;
                 input = "";
