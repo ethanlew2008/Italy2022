@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Xamarin.Essentials;
 
 namespace Italy2022
 {
@@ -16,7 +17,7 @@ namespace Italy2022
         {
             InitializeComponent();
 
-            if(DateTime.Now.Month < 10 && DateTime.Now.Year == 2022 || DateTime.Now.Month == 10 && DateTime.Now.Day < 29) { before = true; }
+            if(DateTime.Now.Month < 10 && DateTime.Now.Year == 2022 || DateTime.Now.Month == 10 && DateTime.Now.Day < 29) { before = true; ButtonDateFly.Text = "Days"; }
 
             if(DateTime.Now.Hour >= 21 || DateTime.Now.Hour < 9)
             {
@@ -27,13 +28,13 @@ namespace Italy2022
                 Button7.BackgroundColor = Color.Orange; Button8.BackgroundColor = Color.Orange;
                 Button9.BackgroundColor = Color.Orange; Button0.BackgroundColor = Color.Orange;
                 ButtonDot.BackgroundColor = Color.Orange; ButtonDel.BackgroundColor = Color.Orange;
-                ConvertButton.BackgroundColor = Color.Orange;
+                ConvertButton.BackgroundColor = Color.Orange; ButtonDateFly.BackgroundColor = Color.Orange;
 
                 Button1.TextColor = Color.Black; Button3.TextColor = Color.Black;
                 Button4.TextColor = Color.Black; Button6.TextColor = Color.Black;
                 Button7.TextColor = Color.Black; Button9.TextColor = Color.Black;
                 ButtonDot.TextColor = Color.Black; ButtonDel.TextColor = Color.Black;
-                ConvertButton.TextColor = Color.Black;                
+                ConvertButton.TextColor = Color.Black;ButtonDateFly.TextColor = Color.Black;
             }
             else
             {
@@ -98,13 +99,8 @@ namespace Italy2022
 
         private void ButtonDel_Clicked(object sender, EventArgs e)
         {
-            try
-            {
-                input = input.Remove(input.Length - 1);
-                Box.Text = input;
-            }
-            catch (Exception) { input = ""; return; }
-            
+            try { input = input.Remove(input.Length - 1); Box.Text = input; }           
+            catch (Exception) { input = ""; return; }            
         }
 
         private void ConvertButton_Clicked(object sender, EventArgs e)
@@ -117,6 +113,49 @@ namespace Italy2022
                 input = "";
             }
             catch (Exception) { Box.Text = "Error"; input = ""; return; }
+        }
+
+        
+
+        private void ButtonSOS_Clicked(object sender, EventArgs e)
+        {
+            try { PhoneDialer.Open("112"); }
+            catch (Exception) { Box.Text = "Any Emergency: 112"; }
+            input = "";
+        }      
+
+        private void ButtonDateFly_Clicked(object sender, EventArgs e)
+        {
+            Datetime();
+        }
+
+        public void Datetime()
+        {
+            input = ""; Box.Text = "";
+            if (before)
+            {
+                DateTime futurDate = Convert.ToDateTime("20/08/2022");
+                DateTime TodayDate = DateTime.Now;
+                Box.Text += Convert.ToInt32((futurDate - TodayDate).TotalDays); Box.Text += " Days";
+            }
+            else
+            {
+                int min = DateTime.Now.Minute;
+                string minstring = "";
+
+                int uktime = DateTime.Now.Hour - 1; int italytime = DateTime.Now.Hour;
+                if (uktime >= 24) { uktime -= 24; }
+                if (italytime >= 24) { italytime -= 24; }
+
+                if (uktime < 0) { uktime *= -1; }
+                if (italytime < 0) { italytime *= -1; }
+
+                if (min.ToString().Length == 1 && min >= 10) { minstring = Convert.ToString(min) + "0"; }
+                if (min.ToString().Length == 1 && min < 10) { minstring = "0" + Convert.ToString(min); }
+
+                Box.Text += "London: " + uktime + ":" + minstring;
+                Box.Text += "Rome: " + italytime + ":" + minstring;
+            }
         }
     }
 }

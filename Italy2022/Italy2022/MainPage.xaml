@@ -37,7 +37,8 @@
             <Button Grid.Row="3" Grid.Column="1" Text="0" x:Name="Button0" Clicked="Button0_Clicked" CornerRadius="20" BackgroundColor="WhiteSmoke" BorderColor="Black"  BorderWidth="1" TextColor="Black"/>
             <Button Grid.Row="3" Grid.Column="2" Text="del" x:Name="ButtonDel" Clicked="ButtonDel_Clicked" CornerRadius="20" BackgroundColor="LightGreen" BorderColor="Black"  BorderWidth="1" TextColor="White"/>
 
-
+            <Button Grid.Row="5" Grid.Column="0" Text="Flight" x:Name="ButtonDateFly" Clicked="ButtonDateFly_Clicked" CornerRadius="20" BackgroundColor="OrangeRed" BorderColor="Black"  BorderWidth="1" TextColor="White"/>
+            <Button Grid.Row="5" Grid.Column="1" Text="SOS" x:Name="ButtonSOS" Clicked="ButtonSOS_Clicked" CornerRadius="5" BackgroundColor="Red" BorderColor="Black"  BorderWidth="1" TextColor="White"/>
             <Button Grid.Row="5" Grid.Column="2" Text="GBP" x:Name="ConvertButton" Clicked="ConvertButton_Clicked" CornerRadius="20" BackgroundColor="LightGreen" BorderColor="Black"  BorderWidth="1" TextColor="White"/>
 
         </Grid>
