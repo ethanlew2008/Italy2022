@@ -142,11 +142,11 @@ namespace Italy2022
                 else
                 {
                     Box.Text = ""; 
-                    int temp = Convert.ToInt32(flighttime.ElapsedMilliseconds-8100000); temp /= 1000; temp /= 60; temp /= 60; temp *= -1;
+                    int temp = Convert.ToInt32(8100000-flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60;
                     TimeSpan spWorkMin = TimeSpan.FromMinutes(temp);
                     string workHours = spWorkMin.ToString(@"hh\:mm");
-                    double percentage = Convert.ToDouble(flighttime.ElapsedMilliseconds); percentage /= 8100000;
-                    Box.Text += workHours + "\n" + Math.Floor(percentage) + "%";
+                    double percentage = Convert.ToDouble(flighttime.ElapsedMilliseconds); percentage /= 8100000; percentage = 100 - percentage;
+                    Box.Text += workHours + "\n" + Math.Floor(percentage) + "% Left";
 
                 }
             }
