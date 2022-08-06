@@ -143,9 +143,10 @@ namespace Italy2022
                 {
                     Box.Text = ""; 
                     int temp = Convert.ToInt32(8100000-flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60;
+                    if(temp <= 0) { Box.Text = "Welcome To Italy"; flighttime.Reset(); return; }
                     TimeSpan spWorkMin = TimeSpan.FromMinutes(temp);
                     string workHours = spWorkMin.ToString(@"hh\:mm");
-                    double percentage = Convert.ToDouble(flighttime.ElapsedMilliseconds); percentage /= 8100000; percentage = 100 - percentage;
+                    double percentage = Convert.ToDouble(flighttime.ElapsedMilliseconds) / 8100000; percentage *= 100; percentage = 100 - percentage;
                     Box.Text += workHours + "\n" + Math.Floor(percentage) + "% Left";
 
                 }
