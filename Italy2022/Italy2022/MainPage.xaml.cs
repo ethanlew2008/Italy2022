@@ -8,6 +8,7 @@ using Xamarin.Forms;
 using Xamarin.Essentials;
 using System.Diagnostics;
 using System.Threading;
+using static Xamarin.Essentials.Permissions;
 
 namespace Italy2022
 {
@@ -16,38 +17,18 @@ namespace Italy2022
         string input = "";
         bool before = false;
         bool bypass = false;
+        bool bypass2 = false;
         bool dev = false;
+        static bool flash = false;
         Stopwatch flighttime = new Stopwatch();
+        Stopwatch sleep = new Stopwatch(); double sleephours = 0;
         public MainPage()
         {
             InitializeComponent();
            
             if(DateTime.Now.Month < 10 && DateTime.Now.Year == 2022 || DateTime.Now.Month == 10 && DateTime.Now.Day < 29) { before = true; ButtonDateFly.Text = "Days"; }
             Datetime();
-
-            if (DateTime.Now.Hour >= 21 || DateTime.Now.Hour < 9)
-            {
-                BackgroundImageSource = "appnightbackround.png";
-                Button1.BackgroundColor = Color.Orange; Button2.BackgroundColor = Color.Orange;
-                Button3.BackgroundColor = Color.Orange; Button4.BackgroundColor = Color.Orange;
-                Button5.BackgroundColor = Color.Orange; Button6.BackgroundColor = Color.Orange;
-                Button7.BackgroundColor = Color.Orange; Button8.BackgroundColor = Color.Orange;
-                Button9.BackgroundColor = Color.Orange; Button0.BackgroundColor = Color.Orange;
-                ButtonDot.BackgroundColor = Color.Orange; ButtonDel.BackgroundColor = Color.Orange;
-                ConvertButton.BackgroundColor = Color.Orange; ButtonDateFly.BackgroundColor = Color.Orange;
-                ButtonTime.BackgroundColor = Color.Orange;
-
-                Button1.TextColor = Color.Black; Button3.TextColor = Color.Black;
-                Button4.TextColor = Color.Black; Button6.TextColor = Color.Black;
-                Button7.TextColor = Color.Black; Button9.TextColor = Color.Black;
-                ButtonDot.TextColor = Color.Black; ButtonDel.TextColor = Color.Black;
-                ConvertButton.TextColor = Color.Black;ButtonDateFly.TextColor = Color.Black;
-                ButtonTime.TextColor = Color.Black;
-            }
-            else
-            {
-                BackgroundImageSource = "appdaybackround.png";
-            }
+            NightorDay();          
         }
 
         private void Button1_Clicked(object sender, EventArgs e)
@@ -115,7 +96,7 @@ namespace Italy2022
         {
             try
             {
-                double conversion = Convert.ToDouble(input) / 1.19;
+                double conversion = Convert.ToDouble(input) / 1.18;
                 int temp = Convert.ToInt32(conversion);
                 conversion = Math.Round(conversion, 2);
                 Box.Text = "That's about £" + conversion;
@@ -128,7 +109,7 @@ namespace Italy2022
 
         private void ButtonSOS_Clicked(object sender, EventArgs e)
         {
-            try { Box.Text = ""; Thread.Sleep(1000); PhoneDialer.Open("112"); }
+            try { Box.Text = ""; PhoneDialer.Open("112"); }
             catch (Exception) { Box.Text = "Any Emergency: 112"; }
             input = "";
         }      
@@ -161,6 +142,86 @@ namespace Italy2022
             Datetime();
         }
 
+        private void ButtonSleep_Clicked(object sender, EventArgs e)
+        {
+
+            if (!sleep.IsRunning) { sleep.Start(); Box.Text = "Goodnight"; ButtonSleep.Text = "End"; bypass2 = true; NightorDay(); }
+            else
+            {
+                sleep.Stop();
+                Box.Text = "Good Morning\n";
+                sleephours = sleep.ElapsedMilliseconds / 1000; sleephours /= 60;
+
+                TimeSpan spWorkMin = TimeSpan.FromMinutes(sleephours);
+                string workHours = spWorkMin.ToString(@"hh\:mm");
+                Box.Text += "You Slept " + workHours;
+                Box.Text += "\nYou took " + Convert.ToInt32(sleephours * 16) + " Breaths";
+                ButtonSleep.Text = "Sleep";
+
+                bypass2 = false;
+                NightorDay();
+            }
+
+
+        }
+
+
+
+       public void NightorDay()
+        {
+            if (DateTime.Now.Hour >= 21 || DateTime.Now.Hour < 9 || bypass2 == true)
+            {
+                BackgroundImageSource = "appnightbackround.png";
+                Button1.BackgroundColor = Color.Orange; Button2.BackgroundColor = Color.Orange;
+                Button3.BackgroundColor = Color.Orange; Button4.BackgroundColor = Color.Orange;
+                Button5.BackgroundColor = Color.Orange; Button6.BackgroundColor = Color.Orange;
+                Button7.BackgroundColor = Color.Orange; Button8.BackgroundColor = Color.Orange;
+                Button9.BackgroundColor = Color.Orange; Button0.BackgroundColor = Color.Orange;
+                ButtonDot.BackgroundColor = Color.Orange; ButtonDel.BackgroundColor = Color.Orange;
+                ConvertButton.BackgroundColor = Color.Orange; ButtonDateFly.BackgroundColor = Color.Orange;
+                ButtonTime.BackgroundColor = Color.Orange;
+                ButtonSleep.BackgroundColor = Color.Orange;
+                ButtonFlash.BackgroundColor = Color.Orange;
+
+                Button1.TextColor = Color.Black; Button3.TextColor = Color.Black;
+                Button4.TextColor = Color.Black; Button6.TextColor = Color.Black;
+                Button7.TextColor = Color.Black; Button9.TextColor = Color.Black;
+                ButtonDot.TextColor = Color.Black; ButtonDel.TextColor = Color.Black;
+                ConvertButton.TextColor = Color.Black; ButtonDateFly.TextColor = Color.Black;
+                ButtonFlash.TextColor = Color.Black;
+                ButtonTime.TextColor = Color.Black;
+            }
+            else
+            {
+                BackgroundImageSource = "appdaybackround.png";
+                Button1.BackgroundColor = Color.OrangeRed; Button1.TextColor = Color.White;
+                Button2.BackgroundColor = Color.White;
+                Button3.BackgroundColor = Color.LightGreen; Button3.TextColor = Color.White;
+
+                Button4.BackgroundColor = Color.OrangeRed; Button4.TextColor = Color.White;
+                Button5.BackgroundColor = Color.White;
+                Button6.BackgroundColor = Color.LightGreen; Button6.TextColor = Color.White;
+
+                Button7.BackgroundColor = Color.OrangeRed; Button7.TextColor = Color.White;
+                Button8.BackgroundColor = Color.White;
+                Button9.BackgroundColor = Color.LightGreen; Button9.TextColor = Color.White;
+
+                ButtonDot.BackgroundColor = Color.OrangeRed; ButtonDot.TextColor = Color.White;
+                Button0.BackgroundColor = Color.White;
+                ButtonDel.BackgroundColor = Color.LightGreen; ButtonDel.TextColor = Color.White;
+
+                ButtonDateFly.BackgroundColor = Color.OrangeRed; ButtonDateFly.TextColor = Color.White;
+                ConvertButton.BackgroundColor = Color.LightGreen; ConvertButton.TextColor = Color.White;
+
+                ButtonTime.BackgroundColor = Color.OrangeRed; ButtonTime.TextColor = Color.White;
+                ButtonSleep.BackgroundColor = Color.White;
+                ButtonFlash.BackgroundColor = Color.LightGreen; ButtonFlash.TextColor = Color.White;
+
+            }
+
+            
+        }
+
         public void Datetime()
         {
             input = ""; Box.Text = "";
@@ -190,8 +251,21 @@ namespace Italy2022
 
                 Box.Text += "Rome: " + italytime + ":" + minstring;
                 Box.Text += "\nLondon: " + uktime + ":" + minstring;
-                
+
             }
+        }
+
+        private void ButtonFlash_Clicked(object sender, EventArgs e)
+        {
+            FLash2Async();
+        }
+
+
+        static async Task FLash2Async()
+        {
+            flash = !flash;
+            if (flash) { await Xamarin.Essentials.Flashlight.TurnOffAsync(); }
+            else { await Xamarin.Essentials.Flashlight.TurnOnAsync(); }
         }
     }
 }
