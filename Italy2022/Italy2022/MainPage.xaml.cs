@@ -19,7 +19,9 @@ namespace Italy2022
         bool bypass = false;
         bool bypass2 = false;
         bool dev = false;
-        static bool flash = false;
+        bool uk = false;
+        bool pregunta = false;
+        static bool flash = true;
         Stopwatch flighttime = new Stopwatch();
         Stopwatch sleep = new Stopwatch(); double sleephours = 0;
         public MainPage()
@@ -27,18 +29,20 @@ namespace Italy2022
             InitializeComponent();
            
             if(DateTime.Now.Month < 10 && DateTime.Now.Year == 2022 || DateTime.Now.Month == 10 && DateTime.Now.Day < 29) { before = true; ButtonDateFly.Text = "Days"; }
-            Datetime();
-            NightorDay();          
+            Box.Text = "1. IRE\n2. GBR";
+            NightorDay();
         }
 
         private void Button1_Clicked(object sender, EventArgs e)
         {
             input += "1"; Box.Text = input;
+            if (pregunta == false) { uk = true; Datetime(); ConvertButton.Text = "GBP"; pregunta = true; input = ""; }             
         }
 
         private void Button2_Clicked(object sender, EventArgs e)
-        {
+        {          
             input += "2"; Box.Text = input;
+            if (pregunta == false) { uk = false; Datetime(); ConvertButton.Text = "EUR"; pregunta = true; input = ""; }
         }
 
         private void Button3_Clicked(object sender, EventArgs e)
@@ -94,12 +98,22 @@ namespace Italy2022
 
         private void ConvertButton_Clicked(object sender, EventArgs e)
         {
+
+            double conversion = Convert.ToDouble(input);
             try
             {
-                double conversion = Convert.ToDouble(input) / 1.18;
-                int temp = Convert.ToInt32(conversion);
-                conversion = Math.Round(conversion, 2);
-                Box.Text = "That's about £" + conversion;
+                if (uk) 
+                {
+                    conversion /= 1.18;
+                    int temp = Convert.ToInt32(conversion);
+                    conversion = Math.Round(conversion, 2);
+                    Box.Text = "That's about £" + conversion;
+                }
+                else
+                {
+                    Box.Text = "That's about €" + conversion;
+                }
+                             
                 input = "";
             }
             catch (Exception) { Box.Text = "Error"; input = ""; return; }
@@ -124,8 +138,12 @@ namespace Italy2022
                 if (!flighttime.IsRunning) { flighttime.Start(); Box.Text = "Flight Started"; }
                 else
                 {
-                    Box.Text = ""; 
-                    int temp = Convert.ToInt32(8100000-flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60;
+                    Box.Text = "";
+                    int temp = 0;
+
+                    if (uk) { temp = Convert.ToInt32(8100000 - flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60; }
+                    else { temp = Convert.ToInt32(8700000 - flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60; }
+                    
                     if(temp <= 0) { Box.Text = "Welcome To Italy"; flighttime.Reset(); return; }
                     TimeSpan spWorkMin = TimeSpan.FromMinutes(temp);
                     string workHours = spWorkMin.ToString(@"hh\:mm");
@@ -250,12 +268,14 @@ namespace Italy2022
                 if (min.ToString().Length == 1 && min < 10) { minstring = "0" + Convert.ToString(min); }
 
                 Box.Text += "Rome: " + italytime + ":" + minstring;
-                Box.Text += "\nLondon: " + uktime + ":" + minstring;
+                if (uk) { Box.Text += "\nLondon: " + uktime + ":" + minstring; }
+                else { Box.Text += "\nDublin: " + uktime + ":" + minstring; }
+                
 
             }
         }
 
-        private void ButtonFlash_Clicked(object sender, EventArgs e)
+        private async void ButtonFlash_Clicked(object sender, EventArgs e)
         {
             FLash2Async();
         }
