@@ -8,6 +8,7 @@ using Xamarin.Forms;
 using Xamarin.Essentials;
 using System.Diagnostics;
 using System.Threading;
+using Xamarin.Essentials;
 using static Xamarin.Essentials.Permissions;
 
 namespace Italy2022
@@ -33,16 +34,35 @@ namespace Italy2022
             NightorDay();
         }
 
+        public async void Alt()
+        {
+            try
+            {
+                var location = await Geolocation.GetLastKnownLocationAsync();
+                double temp = Convert.ToDouble(location.Altitude);
+                temp *= 3.2808399;
+                int temp2 = Convert.ToInt32(temp);
+                if (location != null)
+                {
+                    Box.Text += temp2 + "ft";
+                }
+            }
+            catch (Exception)
+            {
+                return;
+            }
+        }
+
         private void Button1_Clicked(object sender, EventArgs e)
         {
             input += "1"; Box.Text = input;
-            if (pregunta == false) { uk = true; Datetime(); ConvertButton.Text = "GBP"; pregunta = true; input = ""; }             
+            if (pregunta == false) { uk = false; Datetime(); ConvertButton.Text = "EUR"; pregunta = true; input = ""; }             
         }
 
         private void Button2_Clicked(object sender, EventArgs e)
         {          
             input += "2"; Box.Text = input;
-            if (pregunta == false) { uk = false; Datetime(); ConvertButton.Text = "EUR"; pregunta = true; input = ""; }
+            if (pregunta == false) { uk = true; Datetime(); ConvertButton.Text = "GBP"; pregunta = true; input = ""; }
         }
 
         private void Button3_Clicked(object sender, EventArgs e)
@@ -77,7 +97,7 @@ namespace Italy2022
 
         private void Button9_Clicked(object sender, EventArgs e)
         {
-            input += "9"; Box.Text = input;
+           input += "9"; Box.Text = input;
         }
 
         private void ButtonDot_Clicked(object sender, EventArgs e)
@@ -97,14 +117,13 @@ namespace Italy2022
         }
 
         private void ConvertButton_Clicked(object sender, EventArgs e)
-        {
-
-            double conversion = Convert.ToDouble(input);
+        {      
             try
             {
+                double conversion = Convert.ToDouble(input);
                 if (uk) 
-                {
-                    conversion /= 1.18;
+                {                 
+                    conversion /= 1.16;
                     int temp = Convert.ToInt32(conversion);
                     conversion = Math.Round(conversion, 2);
                     Box.Text = "That's about £" + conversion;
@@ -147,8 +166,7 @@ namespace Italy2022
                     if(temp <= 0) { Box.Text = "Welcome To Italy"; flighttime.Reset(); return; }
                     TimeSpan spWorkMin = TimeSpan.FromMinutes(temp);
                     string workHours = spWorkMin.ToString(@"hh\:mm");
-                    double percentage = Convert.ToDouble(flighttime.ElapsedMilliseconds) / 8100000; percentage *= 100; percentage = 100 - percentage;
-                    Box.Text += workHours + "\n" + Math.Floor(percentage) + "% Left";
+                    Box.Text += workHours + "\n"; Alt();
 
                 }
             }
@@ -278,9 +296,9 @@ namespace Italy2022
         private async void ButtonFlash_Clicked(object sender, EventArgs e)
         {
             FLash2Async();
+            if (flash) { ButtonFlash.BackgroundColor = Color.LightGreen; }
+            else { ButtonFlash.BackgroundColor = Color.LawnGreen; }
         }
-
-
         static async Task FLash2Async()
         {
             flash = !flash;
