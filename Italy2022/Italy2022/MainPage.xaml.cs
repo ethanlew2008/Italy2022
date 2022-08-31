@@ -262,7 +262,6 @@ namespace Italy2022
         public void Datetime()
         {
             input = ""; Box.Text = "";
-            string country = Convert.ToString();
 
 
             if (before && bypass == false)
