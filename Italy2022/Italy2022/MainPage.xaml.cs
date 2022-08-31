@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Threading;
 using Xamarin.Essentials;
 using static Xamarin.Essentials.Permissions;
+using System.Globalization;
 
 namespace Italy2022
 {
@@ -38,7 +39,7 @@ namespace Italy2022
         {
             try
             {
-                var location = await Geolocation.GetLastKnownLocationAsync();
+                var location = await Geolocation.GetLastKnownLocationAsync();                
                 double temp = Convert.ToDouble(location.Altitude);
                 temp *= 3.2808399;
                 int temp2 = Convert.ToInt32(temp);
@@ -261,6 +262,9 @@ namespace Italy2022
         public void Datetime()
         {
             input = ""; Box.Text = "";
+            string country = Convert.ToString();
+
+
             if (before && bypass == false)
             {
                 DateTime futurDate = Convert.ToDateTime("29/10/2022");
@@ -291,13 +295,20 @@ namespace Italy2022
                 
 
             }
+
+            Box.Text = country;
         }
 
         private async void ButtonFlash_Clicked(object sender, EventArgs e)
         {
             FLash2Async();
-            if (flash) { ButtonFlash.BackgroundColor = Color.LightGreen; }
-            else { ButtonFlash.BackgroundColor = Color.LawnGreen; }
+
+            if(Button1.BackgroundColor == Color.OrangeRed)
+            {
+                if (flash) { ButtonFlash.BackgroundColor = Color.LightGreen; }
+                else { ButtonFlash.BackgroundColor = Color.LawnGreen; }
+            }
+            
         }
         static async Task FLash2Async()
         {
