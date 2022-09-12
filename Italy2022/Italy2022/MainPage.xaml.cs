@@ -14,50 +14,62 @@ using System.Globalization;
 
 namespace Italy2022
 {
+
+
     public partial class MainPage : ContentPage
     {
         string input = "";
+        static string location = "";
+
         bool before = false;
         bool bypass = false;
         bool bypass2 = false;
         bool dev = false;
         bool uk = false;
         bool pregunta = false;
-        static bool flash = true;
+        static bool flash = true;   
+
         Stopwatch flighttime = new Stopwatch();
         Stopwatch sleep = new Stopwatch(); double sleephours = 0;
+        APIClient Client = new APIClient();
+        public string inpput;
+        
+        
+
         public MainPage()
         {
-            InitializeComponent();
-           
+            InitializeComponent();         
             if(DateTime.Now.Month < 10 && DateTime.Now.Year == 2022 || DateTime.Now.Month == 10 && DateTime.Now.Day < 29) { before = true; ButtonDateFly.Text = "Days"; }
             Box.Text = "1. IRE\n2. GBR";
             NightorDay();
         }
+   
 
         public async void Alt()
         {
+            int temp2;
             try
             {
-                var location = await Geolocation.GetLastKnownLocationAsync();                
-                double temp = Convert.ToDouble(location.Altitude);
+                var location2 = await Geolocation.GetLastKnownLocationAsync();
+                location = Convert.ToString(location2.Altitude);
+                double temp = Convert.ToDouble(location);
                 temp *= 3.2808399;
-                int temp2 = Convert.ToInt32(temp);
+                temp2 = Convert.ToInt32(temp);
+            }
+            catch (Exception) { return; }
+
+
                 if (location != null)
                 {
                     Box.Text += temp2 + "ft";
-                }
-            }
-            catch (Exception)
-            {
-                return;
-            }
+                }        
         }
+
 
         private void Button1_Clicked(object sender, EventArgs e)
         {
             input += "1"; Box.Text = input;
-            if (pregunta == false) { uk = false; Datetime(); ConvertButton.Text = "EUR"; pregunta = true; input = ""; }             
+            if (pregunta == false) { uk = false; Datetime(); ConvertButton.Text = "EUR"; pregunta = true; input = ""; }
         }
 
         private void Button2_Clicked(object sender, EventArgs e)
@@ -68,7 +80,7 @@ namespace Italy2022
 
         private void Button3_Clicked(object sender, EventArgs e)
         {
-            input += "3"; Box.Text = input;
+            input += "3"; Box.Text = input;           
         }
 
         private void Button4_Clicked(object sender, EventArgs e)
@@ -123,8 +135,9 @@ namespace Italy2022
             {
                 double conversion = Convert.ToDouble(input);
                 if (uk) 
-                {                 
-                    conversion /= 1.16;
+                {
+                    if(Client.varsyr == null) { conversion *= 0.87; }                    
+                    else { conversion *= Convert.ToDouble(Client.varsyr); }
                     int temp = Convert.ToInt32(conversion);
                     conversion = Math.Round(conversion, 2);
                     Box.Text = "That's about £" + conversion;
@@ -294,26 +307,28 @@ namespace Italy2022
                 
 
             }
-
-            Box.Text = country;
         }
 
-        private async void ButtonFlash_Clicked(object sender, EventArgs e)
+        private void ButtonFlash_Clicked(object sender, EventArgs e)
         {
-            FLash2Async();
+            //FLash2Async();
 
-            if(Button1.BackgroundColor == Color.OrangeRed)
-            {
-                if (flash) { ButtonFlash.BackgroundColor = Color.LightGreen; }
-                else { ButtonFlash.BackgroundColor = Color.LawnGreen; }
-            }
-            
+            //if (Button1.BackgroundColor == Color.OrangeRed)
+            //{
+            //    if (flash) { ButtonFlash.BackgroundColor = Color.LightGreen; }
+            //    else { ButtonFlash.BackgroundColor = Color.LawnGreen; }
+            //}
+            Client.boxtextAPI = Box.Text;
+            Client.GetName();
+            Box.Text = Client.varsyr;
         }
-        static async Task FLash2Async()
-        {
-            flash = !flash;
-            if (flash) { await Xamarin.Essentials.Flashlight.TurnOffAsync(); }
-            else { await Xamarin.Essentials.Flashlight.TurnOnAsync(); }
+
+            //}
+            //static async Task FLash2Async()
+            //{
+            //    flash = !flash;
+            //    if (flash) { await Xamarin.Essentials.Flashlight.TurnOffAsync(); }
+            //    else { await Xamarin.Essentials.Flashlight.TurnOnAsync(); }
+            //}
         }
-    }
 }
