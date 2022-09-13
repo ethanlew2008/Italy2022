@@ -12,6 +12,7 @@ using Xamarin.Essentials;
 using static Xamarin.Essentials.Permissions;
 using System.Globalization;
 
+
 namespace Italy2022
 {
 
@@ -27,23 +28,25 @@ namespace Italy2022
         bool dev = false;
         bool uk = false;
         bool pregunta = false;
-        static bool flash = true;   
+        static bool flash = true;
 
         Stopwatch flighttime = new Stopwatch();
         Stopwatch sleep = new Stopwatch(); double sleephours = 0;
         APIClient Client = new APIClient();
+        APIClientUSD ClientUSD = new APIClientUSD();
         public string inpput;
-        
-        
+
+
 
         public MainPage()
         {
-            InitializeComponent();         
-            if(DateTime.Now.Month < 10 && DateTime.Now.Year == 2022 || DateTime.Now.Month == 10 && DateTime.Now.Day < 29) { before = true; ButtonDateFly.Text = "Days"; }
+            InitializeComponent();
+            if (DateTime.Now.Month < 10 && DateTime.Now.Year == 2022 || DateTime.Now.Month == 10 && DateTime.Now.Day < 29) { before = true; ButtonDateFly.Text = "Days"; }
             Box.Text = "1. IRE\n2. GBR";
             NightorDay();
+            Client.GetGBP();
         }
-   
+
 
         public async void Alt()
         {
@@ -59,10 +62,10 @@ namespace Italy2022
             catch (Exception) { return; }
 
 
-                if (location != null)
-                {
-                    Box.Text += temp2 + "ft";
-                }        
+            if (location != null)
+            {
+                Box.Text += temp2 + "ft";
+            }
         }
 
 
@@ -73,14 +76,14 @@ namespace Italy2022
         }
 
         private void Button2_Clicked(object sender, EventArgs e)
-        {          
+        {
             input += "2"; Box.Text = input;
             if (pregunta == false) { uk = true; Datetime(); ConvertButton.Text = "GBP"; pregunta = true; input = ""; }
         }
 
         private void Button3_Clicked(object sender, EventArgs e)
         {
-            input += "3"; Box.Text = input;           
+            input += "3"; Box.Text = input;
         }
 
         private void Button4_Clicked(object sender, EventArgs e)
@@ -110,7 +113,7 @@ namespace Italy2022
 
         private void Button9_Clicked(object sender, EventArgs e)
         {
-           input += "9"; Box.Text = input;
+            input += "9"; Box.Text = input;
         }
 
         private void ButtonDot_Clicked(object sender, EventArgs e)
@@ -125,18 +128,18 @@ namespace Italy2022
 
         private void ButtonDel_Clicked(object sender, EventArgs e)
         {
-            try { input = input.Remove(input.Length - 1); Box.Text = input; }           
-            catch (Exception) { input = ""; return; }            
+            try { input = input.Remove(input.Length - 1); Box.Text = input; }
+            catch (Exception) { input = ""; return; }
         }
 
         private void ConvertButton_Clicked(object sender, EventArgs e)
-        {      
+        {
             try
             {
                 double conversion = Convert.ToDouble(input);
-                if (uk) 
-                {
-                    if(Client.varsyr == null) { conversion *= 0.87; }                    
+                if (uk)
+                {                  
+                    if (Client.varsyr == null) { conversion *= 0.87; }
                     else { conversion *= Convert.ToDouble(Client.varsyr); }
                     int temp = Convert.ToInt32(conversion);
                     conversion = Math.Round(conversion, 2);
@@ -146,25 +149,25 @@ namespace Italy2022
                 {
                     Box.Text = "That's about €" + conversion;
                 }
-                             
+
                 input = "";
             }
             catch (Exception) { Box.Text = "Error"; input = ""; return; }
         }
 
-        
+
 
         private void ButtonSOS_Clicked(object sender, EventArgs e)
         {
             try { Box.Text = ""; PhoneDialer.Open("112"); }
             catch (Exception) { Box.Text = "Any Emergency: 112"; }
             input = "";
-        }      
+        }
 
         private void ButtonDateFly_Clicked(object sender, EventArgs e)
         {
             input = "";
-            if(Box.Text == "1622") { dev = true; Box.Text = ""; ButtonDateFly.Text = "Flight"; }
+            if (Box.Text == "1622") { dev = true; Box.Text = ""; ButtonDateFly.Text = "Flight"; }
             if (before && dev == false) { Datetime(); }
             else
             {
@@ -176,8 +179,8 @@ namespace Italy2022
 
                     if (uk) { temp = Convert.ToInt32(8100000 - flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60; }
                     else { temp = Convert.ToInt32(8700000 - flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60; }
-                    
-                    if(temp <= 0) { Box.Text = "Welcome To Italy"; flighttime.Reset(); return; }
+
+                    if (temp <= 0) { Box.Text = "Welcome To Italy"; flighttime.Reset(); return; }
                     TimeSpan spWorkMin = TimeSpan.FromMinutes(temp);
                     string workHours = spWorkMin.ToString(@"hh\:mm");
                     Box.Text += workHours + "\n"; Alt();
@@ -217,7 +220,7 @@ namespace Italy2022
 
 
 
-       public void NightorDay()
+        public void NightorDay()
         {
             if (DateTime.Now.Hour >= 21 || DateTime.Now.Hour < 9 || bypass2 == true)
             {
@@ -269,19 +272,23 @@ namespace Italy2022
 
             }
 
-            
+
         }
 
-        public void Datetime()
+        public async void Datetime()
         {
             input = ""; Box.Text = "";
-
+            
 
             if (before && bypass == false)
             {
+                await ClientUSD.GetUSD();
+                double i = Convert.ToDouble(ClientUSD.varsyrUSD); i = Math.Round(i, 2);
                 DateTime futurDate = Convert.ToDateTime("29/10/2022");
                 DateTime TodayDate = DateTime.Now;
-                Box.Text += Convert.ToInt32((futurDate - TodayDate).TotalDays); Box.Text += " Days";
+                Box.Text += Convert.ToInt32((futurDate - TodayDate).TotalDays); Box.Text += " Days\n";
+                if(i != 0) { Box.Text += "EUR/USD: " + i; }
+                
             }
             else
             {
@@ -304,31 +311,18 @@ namespace Italy2022
                 Box.Text += "Rome: " + italytime + ":" + minstring;
                 if (uk) { Box.Text += "\nLondon: " + uktime + ":" + minstring; }
                 else { Box.Text += "\nDublin: " + uktime + ":" + minstring; }
-                
+
 
             }
         }
 
         private void ButtonFlash_Clicked(object sender, EventArgs e)
         {
-            //FLash2Async();
-
-            //if (Button1.BackgroundColor == Color.OrangeRed)
-            //{
-            //    if (flash) { ButtonFlash.BackgroundColor = Color.LightGreen; }
-            //    else { ButtonFlash.BackgroundColor = Color.LawnGreen; }
-            //}
-            Client.boxtextAPI = Box.Text;
-            Client.GetName();
-            Box.Text = Client.varsyr;
+           
         }
 
-            //}
-            //static async Task FLash2Async()
-            //{
-            //    flash = !flash;
-            //    if (flash) { await Xamarin.Essentials.Flashlight.TurnOffAsync(); }
-            //    else { await Xamarin.Essentials.Flashlight.TurnOnAsync(); }
-            //}
-        }
+
+
+    }
 }
+

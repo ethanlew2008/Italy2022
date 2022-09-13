@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-
 namespace Italy2022
 {
 
@@ -14,16 +13,13 @@ namespace Italy2022
         HttpClient _httpClient;
         ReqVars vars = new ReqVars();
         public string varsyr { get; set; }
-        public string boxtextAPI { get; set; }
 
-
-        
         public APIClient()
         {
             _httpClient = new HttpClient();
         }
 
-        public async Task<ReqVars> GetName()
+        public async Task<ReqVars> GetGBP()
         {
 
             Uri uri = new Uri("https://v6.exchangerate-api.com/v6/13190f03d445d8a2357ad591/pair/EUR/GBP");
@@ -40,6 +36,8 @@ namespace Italy2022
             }
 
             return vars;
-        }      
+        }
+
+        
     }
 }
