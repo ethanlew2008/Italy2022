@@ -21,7 +21,6 @@ namespace Italy2022
     {
         string input = "";
         static string location = "";
-
         bool before = false;
         bool bypass = false;
         bool bypass2 = false;
@@ -34,6 +33,7 @@ namespace Italy2022
         Stopwatch sleep = new Stopwatch(); double sleephours = 0;
         APIClient Client = new APIClient();
         APIClientUSD ClientUSD = new APIClientUSD();
+
         public string inpput;
 
 
@@ -222,7 +222,11 @@ namespace Italy2022
 
         public void NightorDay()
         {
-            if (DateTime.Now.Hour >= 21 || DateTime.Now.Hour < 9 || bypass2 == true)
+            Xamarin.Essentials.AppTheme theme = AppInfo.RequestedTheme;
+
+
+
+            if (DateTime.Now.Hour >= 21 || DateTime.Now.Hour < 9 || bypass2 == true || theme == AppTheme.Dark)
             {
                 BackgroundImageSource = "appnightbackround.png";
                 Button1.BackgroundColor = Color.Orange; Button2.BackgroundColor = Color.Orange;
@@ -318,11 +322,15 @@ namespace Italy2022
 
         private void ButtonFlash_Clicked(object sender, EventArgs e)
         {
-           
+            FLash2Async();
         }
 
-
-
+        static async Task FLash2Async()
+        {
+            flash = !flash;
+            if (flash) { await Xamarin.Essentials.Flashlight.TurnOffAsync(); }
+            else { await Xamarin.Essentials.Flashlight.TurnOnAsync(); }
+        }
     }
 }
 
