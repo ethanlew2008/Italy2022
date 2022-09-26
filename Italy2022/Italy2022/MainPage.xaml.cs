@@ -28,11 +28,14 @@ namespace Italy2022
         bool uk = false;
         bool pregunta = false;
         static bool flash = true;
+        public double percentage = 0;
+
 
         Stopwatch flighttime = new Stopwatch();
         Stopwatch sleep = new Stopwatch(); double sleephours = 0;
         APIClient Client = new APIClient();
         APIClientUSD ClientUSD = new APIClientUSD();
+
 
         public string inpput;
 
@@ -46,29 +49,6 @@ namespace Italy2022
             NightorDay();
             Client.GetGBP();
         }
-
-
-        public async void Alt()
-        {
-            int temp2;
-            try
-            {
-                var location2 = await Geolocation.GetLastKnownLocationAsync();
-                location = Convert.ToString(location2.Altitude);
-                double temp = Convert.ToDouble(location);
-                temp *= 3.2808399;
-                temp2 = Convert.ToInt32(temp);
-            }
-            catch (Exception) { return; }
-
-
-            if (location != null)
-            {
-                Box.Text += temp2 + "ft";
-            }
-        }
-
-
         private void Button1_Clicked(object sender, EventArgs e)
         {
             input += "1"; Box.Text = input;
@@ -171,19 +151,26 @@ namespace Italy2022
             if (before && dev == false) { Datetime(); }
             else
             {
-                if (!flighttime.IsRunning) { flighttime.Start(); Box.Text = "Flight Started"; }
+                if (!flighttime.IsRunning) { flighttime.Start(); Box.Text = "Flight Started"; PBar.Opacity = 1; PBar.Progress = 100; }
                 else
                 {
                     Box.Text = "";
                     int temp = 0;
+                    
 
-                    if (uk) { temp = Convert.ToInt32(8100000 - flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60; }
-                    else { temp = Convert.ToInt32(8700000 - flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60; }
+                    if (uk) { temp = Convert.ToInt32(8100000 - flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60; percentage = flighttime.ElapsedMilliseconds; percentage /= 8100000;  }
+                    else { temp = Convert.ToInt32(8700000 - flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60; percentage = flighttime.ElapsedMilliseconds; percentage /= 8700000; }
 
-                    if (temp <= 0) { Box.Text = "Welcome To Italy"; flighttime.Reset(); return; }
+                    percentage *= 100;
+                    percentage = percentage - 100;
+                    percentage *= -1;
+                    percentage = Math.Round(percentage);
+                    PBar.Progress = percentage;
+
+                    if (temp <= 0) { Box.Text = "Welcome To Italy"; flighttime.Reset(); PBar.Opacity = 0; return; }
                     TimeSpan spWorkMin = TimeSpan.FromMinutes(temp);
                     string workHours = spWorkMin.ToString(@"hh\:mm");
-                    Box.Text += workHours + "\n"; Alt();
+                    Box.Text += workHours + "\n" + percentage + "%"; 
 
                 }
             }
