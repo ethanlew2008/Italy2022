@@ -165,7 +165,7 @@ namespace Italy2022
                     percentage = percentage - 100;
                     percentage *= -1;
                     percentage = Math.Round(percentage);
-                    PBar.Progress = percentage;
+                    PBar.Progress = percentage / 100;
 
                     if (temp <= 0) { Box.Text = "Welcome To Italy"; flighttime.Reset(); PBar.Opacity = 0; return; }
                     TimeSpan spWorkMin = TimeSpan.FromMinutes(temp);
