@@ -143,7 +143,7 @@ namespace Italy2022
             catch (Exception) { Box.Text = "Any Emergency: 112"; }
             input = "";
             SOSUPDATE = true;
-            if(DateTime.Now.Hour >= 8) { FLash2Async(); }
+            if(DateTime.Now.Hour >= 6) { FLash3Async(); }
         }
 
         private void ButtonDateFly_Clicked(object sender, EventArgs e)
@@ -313,9 +313,20 @@ namespace Italy2022
 
        public async Task FLash2Async()
         {                   
-        flash = !flash;
-        if (flash) { await Xamarin.Essentials.Flashlight.TurnOffAsync(); }
-        else { await Xamarin.Essentials.Flashlight.TurnOnAsync(); }                            
+            flash = !flash;
+            if (flash) { await Xamarin.Essentials.Flashlight.TurnOffAsync(); }
+            else { await Xamarin.Essentials.Flashlight.TurnOnAsync(); }                            
+        }
+
+        public async Task FLash3Async()
+        {
+            while (true)
+            {
+                flash = !flash;
+                if (flash) { await Xamarin.Essentials.Flashlight.TurnOffAsync(); }
+                else { await Xamarin.Essentials.Flashlight.TurnOnAsync(); }
+                Thread.Sleep(1000);
+            }           
         }
 
     }
