@@ -11,7 +11,10 @@ using System.Threading;
 using Xamarin.Essentials;
 using static Xamarin.Essentials.Permissions;
 using System.Globalization;
-
+using Xamarin.Forms.PlatformConfiguration;
+using Plugin.Permissions;
+using Plugin.Permissions.Abstractions;
+using Android.Content;
 
 namespace Italy2022
 {
@@ -21,6 +24,7 @@ namespace Italy2022
     {
         string input = "";
         static string location = "";
+        public string inpput;
         bool before = false;
         bool bypass = false;
         bool bypass2 = false;
@@ -28,6 +32,7 @@ namespace Italy2022
         bool uk = false;
         bool pregunta = false;
         static bool flash = true;
+        static bool SOSUPDATE = false;
         public double percentage = 0;
 
 
@@ -35,11 +40,6 @@ namespace Italy2022
         Stopwatch sleep = new Stopwatch(); double sleephours = 0;
         APIClient Client = new APIClient();
         APIClientUSD ClientUSD = new APIClientUSD();
-
-
-        public string inpput;
-
-
 
         public MainPage()
         {
@@ -51,14 +51,14 @@ namespace Italy2022
         }
         private void Button1_Clicked(object sender, EventArgs e)
         {
-            input += "1"; Box.Text = input;
             if (pregunta == false) { uk = false; Datetime(); ConvertButton.Text = "EUR"; pregunta = true; input = ""; }
+            input += "1"; Box.Text = input;           
         }
 
         private void Button2_Clicked(object sender, EventArgs e)
         {
-            input += "2"; Box.Text = input;
             if (pregunta == false) { uk = true; Datetime(); ConvertButton.Text = "GBP"; pregunta = true; input = ""; }
+            input += "2"; Box.Text = input;          
         }
 
         private void Button3_Clicked(object sender, EventArgs e)
@@ -119,7 +119,7 @@ namespace Italy2022
                 double conversion = Convert.ToDouble(input);
                 if (uk)
                 {                  
-                    if (Client.varsyr == null) { conversion *= 0.87; }
+                    if (Client.varsyr == null) { conversion *= 0.90; }
                     else { conversion *= Convert.ToDouble(Client.varsyr); }
                     int temp = Convert.ToInt32(conversion);
                     conversion = Math.Round(conversion, 2);
@@ -142,6 +142,8 @@ namespace Italy2022
             try { Box.Text = ""; PhoneDialer.Open("112"); }
             catch (Exception) { Box.Text = "Any Emergency: 112"; }
             input = "";
+            SOSUPDATE = true;
+            if(DateTime.Now.Hour >= 8) { FLash2Async(); }
         }
 
         private void ButtonDateFly_Clicked(object sender, EventArgs e)
@@ -210,9 +212,6 @@ namespace Italy2022
         public void NightorDay()
         {
             Xamarin.Essentials.AppTheme theme = AppInfo.RequestedTheme;
-
-
-
             if (DateTime.Now.Hour >= 21 || DateTime.Now.Hour < 9 || bypass2 == true || theme == AppTheme.Dark)
             {
                 BackgroundImageSource = "appnightbackround.png";
@@ -312,12 +311,13 @@ namespace Italy2022
             FLash2Async();
         }
 
-        static async Task FLash2Async()
-        {
-            flash = !flash;
-            if (flash) { await Xamarin.Essentials.Flashlight.TurnOffAsync(); }
-            else { await Xamarin.Essentials.Flashlight.TurnOnAsync(); }
+       public async Task FLash2Async()
+        {                   
+        flash = !flash;
+        if (flash) { await Xamarin.Essentials.Flashlight.TurnOffAsync(); }
+        else { await Xamarin.Essentials.Flashlight.TurnOnAsync(); }                            
         }
+
     }
 }
 
