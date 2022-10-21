@@ -1,20 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Essentials;
 using System.Diagnostics;
 using System.Threading;
-using Xamarin.Essentials;
-using static Xamarin.Essentials.Permissions;
-using System.Globalization;
-using Xamarin.Forms.PlatformConfiguration;
-using Plugin.Permissions;
-using Plugin.Permissions.Abstractions;
-using Android.Content;
+
 
 namespace Italy2022
 {
@@ -34,12 +24,15 @@ namespace Italy2022
         static bool flash = true;
         static bool SOSUPDATE = false;
         public double percentage = 0;
+        
+
 
 
         Stopwatch flighttime = new Stopwatch();
         Stopwatch sleep = new Stopwatch(); double sleephours = 0;
         APIClient Client = new APIClient();
         APIClientUSD ClientUSD = new APIClientUSD();
+
 
         public MainPage()
         {
@@ -48,6 +41,8 @@ namespace Italy2022
             Box.Text = "1. IRE\n2. GBR";
             NightorDay();
             Client.GetGBP();
+            ClientUSD.GetUSD();
+            var getperm = Geolocation.GetLastKnownLocationAsync();
         }
         private void Button1_Clicked(object sender, EventArgs e)
         {
@@ -119,7 +114,7 @@ namespace Italy2022
                 double conversion = Convert.ToDouble(input);
                 if (uk)
                 {                  
-                    if (Client.varsyr == null) { conversion *= 0.90; }
+                    if (Client.varsyr == null) { conversion *= 0.87; }
                     else { conversion *= Convert.ToDouble(Client.varsyr); }
                     int temp = Convert.ToInt32(conversion);
                     conversion = Math.Round(conversion, 2);
@@ -308,7 +303,46 @@ namespace Italy2022
 
         private void ButtonFlash_Clicked(object sender, EventArgs e)
         {
-            FLash2Async();
+            //FLash2Async();
+            SpeakIT();
+        }
+
+        public async void SpeakIT()
+        {
+            if (DateTime.Now.Hour >= 12) 
+            {
+                await TextToSpeech.SpeakAsync("Good Afternoon,");
+                await TextToSpeech.SpeakAsync("It's" + DateTime.Now.ToString("hh: mm") + "pm, on " + DateTime.Now.DayOfWeek);
+            }
+
+            else 
+            {
+                await TextToSpeech.SpeakAsync("Good Morning,"); 
+                await TextToSpeech.SpeakAsync("It's" + DateTime.Now.ToString("hh: mm") + "am, on " + DateTime.Now.DayOfWeek);
+            }
+
+            if(ClientUSD.varsyrUSD != null) await TextToSpeech.SpeakAsync("The Euro is currently worth" + Math.Round(Convert.ToDouble(ClientUSD.varsyrUSD),2) + "Dollars");
+
+            await TextToSpeech.SpeakAsync("Right Now, your Phone is on " + Convert.ToInt32(Battery.ChargeLevel * 100) + "percent");
+
+
+            int temp2 = 0;
+
+            try
+            {
+                var location = await Geolocation.GetLastKnownLocationAsync();
+                double temp = Convert.ToDouble(location.Altitude);
+                temp *= 3.2808399;
+                temp2 = Convert.ToInt32(temp);
+            }
+            catch (Exception) { };
+            
+            
+
+
+            await TextToSpeech.SpeakAsync("You are at a height of " + temp2 + "ft");
+            await TextToSpeech.SpeakAsync("Have a great Day");
+
         }
 
        public async Task FLash2Async()

@@ -44,7 +44,7 @@
             <Button Grid.Row="5" Grid.Column="2" Text="GBP" x:Name="ConvertButton" Clicked="ConvertButton_Clicked" CornerRadius="20" BackgroundColor="LightGreen" BorderColor="Black"  BorderWidth="1" TextColor="White"/>
             <Button Grid.Row="6" Grid.Column="0" Text="Time" x:Name="ButtonTime" Clicked="ButtonTime_Clicked" CornerRadius="20" BackgroundColor="OrangeRed" BorderColor="Black"  BorderWidth="1" TextColor="White"/>
             <Button Grid.Row="5" Grid.Column="1" Text="Sleep" x:Name="ButtonSleep" Clicked="ButtonSleep_Clicked" CornerRadius="20" BackgroundColor="White" BorderColor="Black" BorderWidth="1" TextColor="Black"/>
-            <Button Grid.Row="6" Grid.Column="2" Text="Flash" x:Name="ButtonFlash" Clicked="ButtonFlash_Clicked" CornerRadius="20" BackgroundColor="LightGreen" BorderColor="Black" BorderWidth="1" TextColor="Black"/>
+            <Button Grid.Row="6" Grid.Column="2" Text="Breif" x:Name="ButtonFlash" Clicked="ButtonFlash_Clicked" CornerRadius="20" BackgroundColor="LightGreen" BorderColor="Black" BorderWidth="1" TextColor="Black"/>
 
             <ProgressBar x:Name="PBar" Progress="0" Opacity="0" Grid.Row="8" Grid.Column="1" Margin="0,1,0,1" HorizontalOptions="CenterAndExpand" ScaleY="5" ScaleX="5" ProgressColor="DarkOrange"/>
 
