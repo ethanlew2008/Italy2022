@@ -4,7 +4,7 @@ using Xamarin.Forms;
 using Xamarin.Essentials;
 using System.Diagnostics;
 using System.Threading;
-
+using System.Linq;
 
 namespace Italy2022
 {
@@ -46,13 +46,13 @@ namespace Italy2022
         }
         private void Button1_Clicked(object sender, EventArgs e)
         {
-            if (pregunta == false) { uk = false; Datetime(); ConvertButton.Text = "EUR"; pregunta = true; input = ""; }
+            if (pregunta == false) { uk = false; Datetime(); ConvertButton.Text = "EUR"; pregunta = true; input = ""; return; }
             input += "1"; Box.Text = input;           
         }
 
         private void Button2_Clicked(object sender, EventArgs e)
         {
-            if (pregunta == false) { uk = true; Datetime(); ConvertButton.Text = "GBP"; pregunta = true; input = ""; }
+            if (pregunta == false) { uk = true; Datetime(); ConvertButton.Text = "GBP"; pregunta = true; input = ""; return; }
             input += "2"; Box.Text = input;          
         }
 
@@ -265,14 +265,14 @@ namespace Italy2022
             input = ""; Box.Text = "";
             
 
-            if (before && bypass == false)
+            if (before == true && bypass == false)
             {
                 await ClientUSD.GetUSD();
                 double i = Convert.ToDouble(ClientUSD.varsyrUSD); i = Math.Round(i, 2);
                 DateTime futurDate = Convert.ToDateTime("29/10/2022");
-                DateTime TodayDate = DateTime.Now;
-                Box.Text += Convert.ToInt32((futurDate - TodayDate).TotalDays); Box.Text += " Days\n";
-                if(i != 0) { Box.Text += "EUR/USD: " + i; }
+                DateTime TodayDate = DateTime.Now;                
+                Box.Text += Convert.ToInt32((futurDate - TodayDate).TotalDays); Box.Text += " Days\n";               
+                if (i != 0) { Box.Text += "EUR/USD: " + i; }
                 
             }
             else
@@ -309,39 +309,53 @@ namespace Italy2022
 
         public async void SpeakIT()
         {
+            var locales = await TextToSpeech.GetLocalesAsync();
+            var locale = locales.FirstOrDefault();
+            var settings = new SpeechOptions() { Locale = locale };
+            
             if (DateTime.Now.Hour >= 12) 
             {
-                await TextToSpeech.SpeakAsync("Good Afternoon,");
-                await TextToSpeech.SpeakAsync("It's" + DateTime.Now.ToString("hh: mm") + "pm, on " + DateTime.Now.DayOfWeek);
+                await TextToSpeech.SpeakAsync("Good Afternoon,",settings);
+                await TextToSpeech.SpeakAsync("It's" + DateTime.Now.ToString("hh: mm") + "pm, on " + DateTime.Now.DayOfWeek, settings);
             }
-
             else 
             {
-                await TextToSpeech.SpeakAsync("Good Morning,"); 
-                await TextToSpeech.SpeakAsync("It's" + DateTime.Now.ToString("hh: mm") + "am, on " + DateTime.Now.DayOfWeek);
+                await TextToSpeech.SpeakAsync("Good Morning,", settings); 
+                await TextToSpeech.SpeakAsync("It's" + DateTime.Now.ToString("hh: mm") + "am, on " + DateTime.Now.DayOfWeek,settings);
             }
 
-            if(ClientUSD.varsyrUSD != null) await TextToSpeech.SpeakAsync("The Euro is currently worth" + Math.Round(Convert.ToDouble(ClientUSD.varsyrUSD),2) + "Dollars");
+            if(ClientUSD.varsyrUSD != null) await TextToSpeech.SpeakAsync("The Euro is currently worth" + Math.Round(Convert.ToDouble(ClientUSD.varsyrUSD),2) + "Dollars",settings);
 
-            await TextToSpeech.SpeakAsync("Right Now, your Phone is on " + Convert.ToInt32(Battery.ChargeLevel * 100) + "percent");
+            await TextToSpeech.SpeakAsync("Right Now, your Phone is on " + Convert.ToInt32(Battery.ChargeLevel * 100) + "percent",settings);
+
+            ;
 
 
-            int temp2 = 0;
 
+
+            int altit = 0;
+            double dist = 0;
             try
             {
                 var location = await Geolocation.GetLastKnownLocationAsync();
                 double temp = Convert.ToDouble(location.Altitude);
                 temp *= 3.2808399;
-                temp2 = Convert.ToInt32(temp);
+                altit = Convert.ToInt32(temp);
+
+                Location londloc = new Location();
+                londloc.Latitude = 41.9028;
+                londloc.Longitude = 12.4964;
+
+                dist = location.CalculateDistance(londloc, DistanceUnits.Miles);
+                
             }
             catch (Exception) { };
-            
-            
 
 
-            await TextToSpeech.SpeakAsync("You are at a height of " + temp2 + "ft");
-            await TextToSpeech.SpeakAsync("Have a great Day");
+           
+
+            await TextToSpeech.SpeakAsync("You are at a height of " + altit + "ft and you are " + Convert.ToInt32(dist) + "miles away from Rome",settings) ;
+            await TextToSpeech.SpeakAsync("Have a great Day", settings);
 
         }
 
