@@ -309,7 +309,12 @@ namespace Italy2022
 
         public async void SpeakIT()
         {
-            
+            DateTime futurDate = Convert.ToDateTime("29/10/2022");
+            DateTime TodayDate = DateTime.Now;
+
+            if (before) { await TextToSpeech.SpeakAsync("There are currently" + Convert.ToInt32(futurDate-TodayDate) + "Days until Italy"); }
+
+
             if (DateTime.Now.Hour >= 12) 
             {
                 await TextToSpeech.SpeakAsync("Good Afternoon,");
