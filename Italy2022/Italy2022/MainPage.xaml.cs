@@ -114,7 +114,7 @@ namespace Italy2022
                 double conversion = Convert.ToDouble(input);
                 if (uk)
                 {                  
-                    if (Client.varsyr == null) { conversion *= 0.87; }
+                    if (Client.varsyr == null) { conversion *= 0.86; }
                     else { conversion *= Convert.ToDouble(Client.varsyr); }
                     int temp = Convert.ToInt32(conversion);
                     conversion = Math.Round(conversion, 2);
@@ -309,24 +309,21 @@ namespace Italy2022
 
         public async void SpeakIT()
         {
-            var locales = await TextToSpeech.GetLocalesAsync();
-            var locale = locales.FirstOrDefault();
-            var settings = new SpeechOptions() { Locale = locale };
             
             if (DateTime.Now.Hour >= 12) 
             {
-                await TextToSpeech.SpeakAsync("Good Afternoon,",settings);
-                await TextToSpeech.SpeakAsync("It's" + DateTime.Now.ToString("hh: mm") + "pm, on " + DateTime.Now.DayOfWeek, settings);
+                await TextToSpeech.SpeakAsync("Good Afternoon,");
+                await TextToSpeech.SpeakAsync("It's" + DateTime.Now.ToString("hh: mm") + "pm, on " + DateTime.Now.DayOfWeek);
             }
             else 
             {
-                await TextToSpeech.SpeakAsync("Good Morning,", settings); 
-                await TextToSpeech.SpeakAsync("It's" + DateTime.Now.ToString("hh: mm") + "am, on " + DateTime.Now.DayOfWeek,settings);
+                await TextToSpeech.SpeakAsync("Good Morning,"); 
+                await TextToSpeech.SpeakAsync("It's" + DateTime.Now.ToString("hh: mm") + "am, on " + DateTime.Now.DayOfWeek);
             }
 
-            if(ClientUSD.varsyrUSD != null) await TextToSpeech.SpeakAsync("The Euro is currently worth" + Math.Round(Convert.ToDouble(ClientUSD.varsyrUSD),2) + "Dollars",settings);
+            if(ClientUSD.varsyrUSD != null) await TextToSpeech.SpeakAsync("The Euro is currently worth" + Math.Round(Convert.ToDouble(ClientUSD.varsyrUSD),2) + "Dollars");
 
-            await TextToSpeech.SpeakAsync("Right Now, your Phone is on " + Convert.ToInt32(Battery.ChargeLevel * 100) + "percent",settings);
+            await TextToSpeech.SpeakAsync("Right Now, your Phone is on " + Convert.ToInt32(Battery.ChargeLevel * 100) + "percent");
 
             ;
 
@@ -354,8 +351,8 @@ namespace Italy2022
 
            
 
-            await TextToSpeech.SpeakAsync("You are at a height of " + altit + "ft and you are " + Convert.ToInt32(dist) + "miles away from Rome",settings) ;
-            await TextToSpeech.SpeakAsync("Have a great Day", settings);
+            await TextToSpeech.SpeakAsync("You are at a height of " + altit + "ft and you are " + Convert.ToInt32(dist) + "miles away from Rome") ;
+            await TextToSpeech.SpeakAsync("Have a great Day");
 
         }
 
