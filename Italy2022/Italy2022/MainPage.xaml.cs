@@ -114,7 +114,7 @@ namespace Italy2022
                 double conversion = Convert.ToDouble(input);
                 if (uk)
                 {                  
-                    if (Client.varsyr == null) { conversion *= 0.86; }
+                    if (Client.varsyr == null) { conversion *= 0.87; }
                     else { conversion *= Convert.ToDouble(Client.varsyr); }
                     int temp = Convert.ToInt32(conversion);
                     conversion = Math.Round(conversion, 2);
@@ -138,7 +138,7 @@ namespace Italy2022
             catch (Exception) { Box.Text = "Any Emergency: 112"; }
             input = "";
             SOSUPDATE = true;
-            if(DateTime.Now.Hour >= 6) { FLash3Async(); }
+            if(DateTime.Now.Hour >= 18) { FLash3Async(); }
         }
 
         private void ButtonDateFly_Clicked(object sender, EventArgs e)
@@ -155,8 +155,8 @@ namespace Italy2022
                     int temp = 0;
                     
 
-                    if (uk) { temp = Convert.ToInt32(8100000 - flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60; percentage = flighttime.ElapsedMilliseconds; percentage /= 8100000;  }
-                    else { temp = Convert.ToInt32(8700000 - flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60; percentage = flighttime.ElapsedMilliseconds; percentage /= 8700000; }
+                    if (uk) { temp = Convert.ToInt32(7.2e+6 - flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60; percentage = flighttime.ElapsedMilliseconds; percentage /= 7.2e+6;  }
+                    else { temp = Convert.ToInt32(9e+6 - flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60; percentage = flighttime.ElapsedMilliseconds; percentage /= 9e+6; }
 
                     percentage *= 100;
                     percentage = percentage - 100;
@@ -276,27 +276,25 @@ namespace Italy2022
                 
             }
             else
-            {
-                int min = DateTime.Now.Minute;
-                string minstring = Convert.ToString(DateTime.Now.Minute);
+            {                
                 bypass = false;
 
-                int uktime = DateTime.Now.Hour - 1; int italytime = DateTime.Now.Hour;
-                if (uktime >= 24) { uktime -= 24; }
-                if (italytime >= 24) { italytime -= 24; }
+                string italiatime;
+                string uktime;
 
-                if (uktime < 0) { uktime *= -1; }
-                if (italytime < 0) { italytime *= -1; }
+                if(DateTime.Now.Month > 10 && DateTime.Now.Month < 4) 
+                {
+                    italiatime = DateTime.UtcNow.AddHours(1).ToString("hh:mm");
+                    uktime = DateTime.UtcNow.ToString("hh:mm");
+                }
+                else 
+                {
+                    italiatime = DateTime.UtcNow.AddHours(2).ToString("hh:mm");
+                    uktime = DateTime.UtcNow.AddHours(1).ToString("hh:mm");
+                }
 
-                if (before) { uktime++; italytime++; }
-
-                if (min.ToString().Length == 1 && min >= 10) { minstring = Convert.ToString(min) + "0"; }
-                if (min.ToString().Length == 1 && min < 10) { minstring = "0" + Convert.ToString(min); }
-
-                Box.Text += "Rome: " + italytime + ":" + minstring;
-                if (uk) { Box.Text += "\nLondon: " + uktime + ":" + minstring; }
-                else { Box.Text += "\nDublin: " + uktime + ":" + minstring; }
-
+                Box.Text = "Rome: " + italiatime;
+                Box.Text = "London: " + uktime;
 
             }
         }
@@ -306,7 +304,7 @@ namespace Italy2022
             //FLash2Async();
             SpeakIT();
         }
-
+        
         public async void SpeakIT()
         {
             DateTime futurDate = Convert.ToDateTime("29/10/2022");
