@@ -37,11 +37,9 @@ namespace Italy2022
         public MainPage()
         {
             InitializeComponent();
-            if (DateTime.Now.Month < 10 && DateTime.Now.Year == 2022 || DateTime.Now.Month == 10 && DateTime.Now.Day < 29) { before = true; ButtonDateFly.Text = "Days"; }
             Box.Text = "1. IRE\n2. GBR";
             NightorDay();
-            Client.GetGBP();
-            ClientUSD.GetUSD();
+            Client.GetGBP(); ClientUSD.GetUSD();
             var getperm = Geolocation.GetLastKnownLocationAsync();
         }
         private void Button1_Clicked(object sender, EventArgs e)
@@ -111,23 +109,9 @@ namespace Italy2022
         {
             try
             {
-                double conversion = Convert.ToDouble(input);
-                if (uk)
-                {                  
-                    if (Client.varsyr == null) { conversion *= 0.87; }
-                    else { conversion *= Convert.ToDouble(Client.varsyr); }
-                    int temp = Convert.ToInt32(conversion);
-                    conversion = Math.Round(conversion, 2);
-                    Box.Text = "That's about £" + conversion;
-                }
-                else
-                {
-                    Box.Text = "That's about €" + conversion;
-                }
-
-                input = "";
+                if (uk) { Box.Text = "That's about £" + Convert.ToString(Math.Round(Convert.ToDouble(input) / Convert.ToDouble(Client.varsyr),2)); } else { Box.Text = "That's about €" + Math.Round(Convert.ToDouble(input), 2); }
             }
-            catch (Exception) { Box.Text = "Error"; input = ""; return; }
+            catch (Exception) { } input = "";      
         }
 
 
@@ -143,35 +127,19 @@ namespace Italy2022
 
         private void ButtonDateFly_Clicked(object sender, EventArgs e)
         {
-            input = "";
-            if (Box.Text == "1622") { dev = true; Box.Text = ""; ButtonDateFly.Text = "Flight"; }
-            if (before && dev == false) { Datetime(); }
-            else
+            if (!flighttime.IsRunning) { flighttime.Start(); }
+            if (flighttime.IsRunning)
             {
-                if (!flighttime.IsRunning) { flighttime.Start(); Box.Text = "Flight Started"; PBar.Opacity = 1; PBar.Progress = 100; }
-                else
-                {
-                    Box.Text = "";
-                    int temp = 0;
-                    
-
-                    if (uk) { temp = Convert.ToInt32(7.2e+6 - flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60; percentage = flighttime.ElapsedMilliseconds; percentage /= 7.2e+6;  }
-                    else { temp = Convert.ToInt32(9e+6 - flighttime.ElapsedMilliseconds); temp /= 1000; temp /= 60; percentage = flighttime.ElapsedMilliseconds; percentage /= 9e+6; }
-
-                    percentage *= 100;
-                    percentage = percentage - 100;
-                    percentage *= -1;
-                    percentage = Math.Round(percentage);
-                    PBar.Progress = percentage / 100;
-
-                    if (temp <= 0) { Box.Text = "Welcome To Italy"; flighttime.Reset(); PBar.Opacity = 0; return; }
-                    TimeSpan spWorkMin = TimeSpan.FromMinutes(temp);
-                    string workHours = spWorkMin.ToString(@"hh\:mm");
-                    Box.Text += workHours + "\n" + percentage + "%"; 
-
-                }
+                int flightm = Convert.ToInt32(flighttime.Elapsed.TotalMinutes);
+                if (uk) { flightm = 140 - flightm; } else { flightm = 195 - flightm; }
+                TimeSpan spWorkMin = TimeSpan.FromMinutes(Convert.ToInt32(flightm));
+                Box.Text = spWorkMin.ToString(@"hh\:mm");
+                Box.Text += "\n" + Convert.ToInt32(100 - (flighttime.Elapsed.TotalMinutes / flightm * 100)) + "% Left";
+                input = "";
             }
+
         }
+        
 
         private void ButtonTime_Clicked(object sender, EventArgs e)
         {
@@ -181,7 +149,6 @@ namespace Italy2022
 
         private void ButtonSleep_Clicked(object sender, EventArgs e)
         {
-
             if (!sleep.IsRunning) { sleep.Start(); Box.Text = "Goodnight"; ButtonSleep.Text = "End"; bypass2 = true; NightorDay(); }
             else
             {
@@ -198,11 +165,7 @@ namespace Italy2022
                 bypass2 = false;
                 NightorDay();
             }
-
-
         }
-
-
 
         public void NightorDay()
         {
@@ -256,47 +219,15 @@ namespace Italy2022
                 ButtonFlash.BackgroundColor = Color.LightGreen; ButtonFlash.TextColor = Color.White;
 
             }
-
-
         }
 
         public async void Datetime()
         {
-            input = ""; Box.Text = "";
-            
-
-            if (before == true && bypass == false)
-            {
-                await ClientUSD.GetUSD();
-                double i = Convert.ToDouble(ClientUSD.varsyrUSD); i = Math.Round(i, 2);
-                DateTime futurDate = Convert.ToDateTime("29/10/2022");
-                DateTime TodayDate = DateTime.Now;                
-                Box.Text += Convert.ToInt32((futurDate - TodayDate).TotalDays); Box.Text += " Days\n";               
-                if (i != 0) { Box.Text += "EUR/USD: " + i; }
-                
-            }
-            else
-            {                
-                bypass = false;
-
-                string italiatime;
-                string uktime;
-
-                if(DateTime.Now.Month > 10 && DateTime.Now.Month < 4) 
-                {
-                    italiatime = DateTime.UtcNow.AddHours(1).ToString("hh:mm");
-                    uktime = DateTime.UtcNow.ToString("hh:mm");
-                }
-                else 
-                {
-                    italiatime = DateTime.UtcNow.AddHours(2).ToString("hh:mm");
-                    uktime = DateTime.UtcNow.AddHours(1).ToString("hh:mm");
-                }
-
-                Box.Text = "Rome: " + italiatime;
-                Box.Text = "London: " + uktime;
-
-            }
+            string x;
+            if (uk) { x = "\nLondon: "; } else { x = "\nDublin: "; }
+            if(DateTime.Now.Month > 3 && DateTime.Now.Month < 11) { Box.Text = "Rome: " + DateTime.UtcNow.AddHours(2).ToString("HH:mm") + x + DateTime.UtcNow.AddHours(1).ToString("HH:mm"); }
+            else { Box.Text = "Rome: " + DateTime.UtcNow.AddHours(1).ToString("HH:mm") + x + DateTime.UtcNow.ToString("HH:mm"); }
+            input = "";
         }
 
         private void ButtonFlash_Clicked(object sender, EventArgs e)
@@ -328,11 +259,7 @@ namespace Italy2022
 
             await TextToSpeech.SpeakAsync("Right Now, your Phone is on " + Convert.ToInt32(Battery.ChargeLevel * 100) + "percent");
 
-            ;
-
-
-
-
+            
             int altit = 0;
             double dist = 0;
             try
@@ -360,11 +287,11 @@ namespace Italy2022
         }
 
        public async Task FLash2Async()
-        {                   
+       {                   
             flash = !flash;
             if (flash) { await Xamarin.Essentials.Flashlight.TurnOffAsync(); }
             else { await Xamarin.Essentials.Flashlight.TurnOnAsync(); }                            
-        }
+       }
 
         public async Task FLash3Async()
         {
